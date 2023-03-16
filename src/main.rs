@@ -9,13 +9,25 @@ fn main() {
     let output = b"".to_vec();
 
     let test = r#"
-▄▄▄▄▄
-█░▄▄▀
-█░▀▀░
-█░██░
-▀▀▀▀▀"#;
+    ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+    ██░███░█▀▄▄▀█▀▄▄▀█░███░█░███░
+    ██░█░█░█░██░█░██░█▄▀░▀▄█▄▀░▀▄
+    ██▄▀▄▀▄██▄▄███▄▄███▄█▄███▄█▄█
+    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀"#;
 
     let bytes = test.as_bytes();
+
+    let mut byte = vec![];
+    for (i, &u) in bytes.iter().enumerate() {
+        byte.push(u);
+        let char = String::from_utf8_lossy(&byte[..]);
+
+        println!("{}", char);
+
+        if i == 10 {
+            break;
+        }
+    }
 
     let mut vec = bytes.to_vec();
     vec.append(&mut bytes.to_vec());

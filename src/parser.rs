@@ -9,6 +9,18 @@ pub struct Args {
     pub file: String,
 
     /// Style of ASCII Art
-    #[arg(short, long, default_value = "Meh")]
+    #[arg(long, default_value = "Meh")]
     pub style: String,
+
+    /// Resize width of image
+    #[arg(long, default_value_t = 0)]
+    pub width: u32,
+
+    /// Resize height of image
+    #[arg(long, default_value_t = 0)]
+    pub height: u32,
+
+    /// Resize image by scale, this preserve the aspect ratio
+    #[arg(short, long, default_value_t = 1)]
+    pub scale: u32,
 }

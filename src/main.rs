@@ -14,24 +14,41 @@ fn grab_image(args: &Args) -> DynamicImage {
 }
 
 fn resize_image(args: &Args, image: &DynamicImage) -> DynamicImage {
-    image.resize(30, 30, Gaussian)
+    let (w, h) = (args.width, args.height);
+    image.resize(w, h, Gaussian)
+}
+
+fn scale_image(args: &Args, image: &DynamicImage) -> DynamicImage {
+    let scale = args.scale;
+
+    let (mut w, mut h) = image.to_luma8().dimensions();
+
+    w = ((w as f32) * scale) as u32;
+    h = ((h as f32) * scale) as u32;
+
+    image.resize(w, h, Gaussian)
 }
 
 fn main() {
     let ascii_char = ['@', '#', 'S', '%', '?', '*', '+', ';', ':', ',', '.'];
     let args = Args::parse();
 
-    let image = grab_image(&args);
-    let resized_image = resize_image(&args, &image);
+    let mut image = grab_image(&args);
 
-    let gray_scale = resized_image.to_luma8();
+    if args.scale != 1.0 {
+        image = scale_image(&args, &image);
+    } else if args.width != 0 && args.height != 0 {
+        image = resize_image(&args, &image);
+    }
+
+    let gray_scale = image.to_luma8();
 
     let (w, h) = gray_scale.dimensions();
 
-    let mut matrix = vec![vec!['n'; w as _]; h as _];
+    let mut matrix = vec![vec!['n'; h as _]; w as _];
 
     for (x, y, pixel) in gray_scale.enumerate_pixels() {
-        let (j, i) = (x as usize, y as usize);
+        let (i, j) = (x as usize, y as usize);
         let index = (pixel.0[0] / 25) as usize;
         matrix[i][j] = ascii_char[index];
     }

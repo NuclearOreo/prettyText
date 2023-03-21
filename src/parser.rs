@@ -21,6 +21,6 @@ pub struct Args {
     pub height: u32,
 
     /// Resize image by scale, this preserve the aspect ratio
-    #[arg(short, long, default_value_t = 1)]
-    pub scale: u32,
+    #[arg(short, long, default_value_t = 1.0)]
+    pub scale: f32,
 }

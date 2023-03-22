@@ -5,12 +5,20 @@ use image::imageops::Gaussian;
 use image::io::Reader as ImageReader;
 use image::DynamicImage;
 use parser::Args;
+use std::process;
 
 fn grab_image(args: &Args) -> DynamicImage {
-    ImageReader::open(&args.file)
-        .expect("Failed to read in image")
-        .decode()
-        .expect("Failed to decode")
+    let file = ImageReader::open(&args.file).unwrap_or_else(|_| {
+        println!("Failed to open file");
+        process::exit(1);
+    });
+
+    let decoded_file = file.decode().unwrap_or_else(|_| {
+        println!("Failed to decode file");
+        process::exit(1);
+    });
+
+    decoded_file
 }
 
 fn resize_image(args: &Args, image: &DynamicImage) -> DynamicImage {
@@ -30,7 +38,7 @@ fn scale_image(args: &Args, image: &DynamicImage) -> DynamicImage {
 }
 
 fn main() {
-    let ascii_char = ['@', '#', 'S', '%', '?', '*', '+', ';', ':', ',', '.'];
+    let ascii_char = ["@", "#", "S", "%", "?", "*", "+", ";", ":", ",", "."];
     let args = Args::parse();
 
     let mut image = grab_image(&args);
@@ -45,15 +53,22 @@ fn main() {
 
     let (w, h) = gray_scale.dimensions();
 
-    let mut matrix = vec![vec!['n'; h as _]; w as _];
+    let mut matrix = vec![vec!["n"; w as _]; h as _];
 
     for (x, y, pixel) in gray_scale.enumerate_pixels() {
-        let (i, j) = (x as usize, y as usize);
+        let (j, i) = (x as usize, y as usize);
         let index = (pixel.0[0] / 25) as usize;
         matrix[i][j] = ascii_char[index];
     }
 
+    let mut string_row = vec![];
+
     for row in matrix.iter() {
-        println!("{:?}", row);
+        let string = row.join(" ");
+        string_row.push(string);
     }
+
+    let output = string_row.join("\n");
+
+    println!("{}", output);
 }

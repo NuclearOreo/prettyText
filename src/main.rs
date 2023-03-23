@@ -5,6 +5,8 @@ use image::imageops::Gaussian;
 use image::io::Reader as ImageReader;
 use image::DynamicImage;
 use parser::Args;
+use std::fs::File;
+use std::io::prelude::*;
 use std::process;
 
 fn grab_image(args: &Args) -> DynamicImage {
@@ -35,6 +37,18 @@ fn scale_image(args: &Args, image: &DynamicImage) -> DynamicImage {
     h = ((h as f32) * scale) as u32;
 
     image.resize(w, h, Gaussian)
+}
+
+fn write_output(name: &str, s: &[u8]) {
+    let mut file = File::create(format!("{}.txt", name)).unwrap_or_else(|_| {
+        println!("Failed to create file");
+        process::exit(1);
+    });
+
+    file.write_all(s).unwrap_or_else(|_| {
+        println!("Failed to write to file");
+        process::exit(1);
+    });
 }
 
 fn main() {
@@ -69,6 +83,8 @@ fn main() {
     }
 
     let output = string_row.join("\n");
+    let bytes = output.as_bytes();
+    write_output(&args.output, bytes);
 
-    println!("{}", output);
+    println!("Wrote to file: {}.txt", args.output);
 }

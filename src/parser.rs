@@ -23,4 +23,8 @@ pub struct Args {
     /// Resize image by scale, this preserve the aspect ratio
     #[arg(short, long, default_value_t = 1.0)]
     pub scale: f32,
+
+    /// Name of the outfile text file
+    #[arg(short, long, default_value = "output")]
+    pub output: String,
 }

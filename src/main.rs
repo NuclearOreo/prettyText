@@ -64,27 +64,15 @@ fn main() {
     }
 
     let gray_scale = image.to_luma8();
-
-    let (w, h) = gray_scale.dimensions();
-
-    let mut matrix = vec![vec!["n"; w as _]; h as _];
+    let mut bytes = vec![];
 
     for (x, y, pixel) in gray_scale.enumerate_pixels() {
-        let (j, i) = (x as usize, y as usize);
         let index = (pixel.0[0] / 25) as usize;
-        matrix[i][j] = ascii_char[index];
+        let delimiter = if x == 0 && y != 0 { b"\n" } else { b" " };
+        bytes.append(&mut ascii_char[index].as_bytes().to_vec());
+        bytes.append(&mut delimiter.to_vec());
     }
 
-    let mut string_row = vec![];
-
-    for row in matrix.iter() {
-        let string = row.join(" ");
-        string_row.push(string);
-    }
-
-    let output = string_row.join("\n");
-    let bytes = output.as_bytes();
-    write_output(&args.output, bytes);
-
+    write_output(&args.output, &bytes);
     println!("Wrote to file: {}.txt", args.output);
 }

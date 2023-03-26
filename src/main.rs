@@ -3,15 +3,22 @@ mod util;
 
 use clap::Parser;
 use parser::Args;
-use util::{grab_image, write_output};
+use util::{grab_image, resize_image, scale_image, write_output};
 
 fn main() {
     let ascii_char = [
         b"@", b"#", b"S", b"%", b"?", b"*", b"+", b";", b":", b",", b".",
     ];
     let args = Args::parse();
+    let mut image = grab_image(&args);
 
-    let image = grab_image(&args);
+    if args.width != 0 && args.height != 0 {
+        image = resize_image(&args, &image);
+    }
+
+    if args.scale != 1.0 {
+        image = scale_image(&args, &image);
+    }
 
     let gray_scale = image.to_luma8();
     let mut bytes = vec![];

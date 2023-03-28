@@ -12,12 +12,10 @@ pub fn grab_image(args: &Args) -> DynamicImage {
         process::exit(1);
     });
 
-    let decoded_file = file.decode().unwrap_or_else(|_| {
+    file.decode().unwrap_or_else(|_| {
         println!("Failed to decode file");
         process::exit(1);
-    });
-
-    decoded_file
+    })
 }
 
 pub fn resize_image(args: &Args, image: &DynamicImage) -> DynamicImage {

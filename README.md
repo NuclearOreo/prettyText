@@ -1,6 +1,6 @@
 # Pretty Text
 
-A CLI tool to covert any image you have to ASCII Art
+A CLI tool to covert any image you have to an ASCII representation
 
 - Help output
 
